@@ -10,7 +10,7 @@ datamodel:
 seed:
   import: seed.graphql
 
-# Download the GraphQL schema of the Prisma API into 
+# Download the GraphQL schema of the Prisma API into
 # `src/generated/prisma.graphql` (as specfied in `.graphqlconfig.yml`).
 hooks:
   post-deploy:

@@ -1,7 +1,23 @@
-# source: https://eu1.prisma.sh/public-boglegs-135/prisma-apollo/dev
-# timestamp: Mon May 07 2018 16:39:28 GMT-0500 (Hora est. Pacífico, Sudamérica)
+# source: https://us1.prisma.sh/sergio-melendez-f22980/database/dev
+# timestamp: Fri Jun 29 2018 15:00:22 GMT-0500 (SA Pacific Standard Time)
 
-type AggregatePost {
+type AggregateForecast {
+  count: Int!
+}
+
+type AggregateGroup {
+  count: Int!
+}
+
+type AggregateMatch {
+  count: Int!
+}
+
+type AggregateTeam {
+  count: Int!
+}
+
+type AggregateUser {
   count: Int!
 }
 
@@ -10,118 +26,65 @@ type BatchPayload {
   count: Long!
 }
 
-"""
-The `Long` scalar type represents non-fractional signed whole numeric values.
-Long can represent values between -(2^63) and 2^63 - 1.
-"""
-scalar Long
-
-type Mutation {
-  createPost(data: PostCreateInput!): Post!
-  updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
-  deletePost(where: PostWhereUniqueInput!): Post
-  upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
-  updateManyPosts(data: PostUpdateInput!, where: PostWhereInput): BatchPayload!
-  deleteManyPosts(where: PostWhereInput): BatchPayload!
-}
-
-enum MutationType {
-  CREATED
-  UPDATED
-  DELETED
-}
-
-"""An object with an ID"""
-interface Node {
-  """The id of the object."""
+type Forecast implements Node {
   id: ID!
-}
-
-"""Information about pagination in a connection."""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: String
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
-}
-
-type Post implements Node {
-  id: ID!
-  isPublished: Boolean!
-  title: String!
-  text: String!
+  user(where: UserWhereInput): User!
+  winner(where: TeamWhereInput): Team!
 }
 
 """A connection to a list of items."""
-type PostConnection {
+type ForecastConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [PostEdge]!
-  aggregate: AggregatePost!
+  edges: [ForecastEdge]!
+  aggregate: AggregateForecast!
 }
 
-input PostCreateInput {
-  isPublished: Boolean
-  title: String!
-  text: String!
+input ForecastCreateInput {
+  user: UserCreateOneInput!
+  winner: TeamCreateOneInput!
 }
 
 """An edge in a connection."""
-type PostEdge {
+type ForecastEdge {
   """The item at the end of the edge."""
-  node: Post!
+  node: Forecast!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum PostOrderByInput {
+enum ForecastOrderByInput {
   id_ASC
   id_DESC
-  isPublished_ASC
-  isPublished_DESC
-  title_ASC
-  title_DESC
-  text_ASC
-  text_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
   createdAt_DESC
 }
 
-type PostPreviousValues {
+type ForecastPreviousValues {
   id: ID!
-  isPublished: Boolean!
-  title: String!
-  text: String!
 }
 
-type PostSubscriptionPayload {
+type ForecastSubscriptionPayload {
   mutation: MutationType!
-  node: Post
+  node: Forecast
   updatedFields: [String!]
-  previousValues: PostPreviousValues
+  previousValues: ForecastPreviousValues
 }
 
-input PostSubscriptionWhereInput {
+input ForecastSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [PostSubscriptionWhereInput!]
+  AND: [ForecastSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [PostSubscriptionWhereInput!]
+  OR: [ForecastSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [PostSubscriptionWhereInput!]
+  NOT: [ForecastSubscriptionWhereInput!]
 
   """
   The subscription event gets dispatched when it's listed in mutation_in
@@ -142,24 +105,23 @@ input PostSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: PostWhereInput
+  node: ForecastWhereInput
 }
 
-input PostUpdateInput {
-  isPublished: Boolean
-  title: String
-  text: String
+input ForecastUpdateInput {
+  user: UserUpdateOneInput
+  winner: TeamUpdateOneInput
 }
 
-input PostWhereInput {
+input ForecastWhereInput {
   """Logical AND on all given filters."""
-  AND: [PostWhereInput!]
+  AND: [ForecastWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [PostWhereInput!]
+  OR: [ForecastWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [PostWhereInput!]
+  NOT: [ForecastWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -200,100 +162,628 @@ input PostWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  isPublished: Boolean
-
-  """All values that are not equal to given value."""
-  isPublished_not: Boolean
-  title: String
-
-  """All values that are not equal to given value."""
-  title_not: String
-
-  """All values that are contained in given list."""
-  title_in: [String!]
-
-  """All values that are not contained in given list."""
-  title_not_in: [String!]
-
-  """All values less than the given value."""
-  title_lt: String
-
-  """All values less than or equal the given value."""
-  title_lte: String
-
-  """All values greater than the given value."""
-  title_gt: String
-
-  """All values greater than or equal the given value."""
-  title_gte: String
-
-  """All values containing the given string."""
-  title_contains: String
-
-  """All values not containing the given string."""
-  title_not_contains: String
-
-  """All values starting with the given string."""
-  title_starts_with: String
-
-  """All values not starting with the given string."""
-  title_not_starts_with: String
-
-  """All values ending with the given string."""
-  title_ends_with: String
-
-  """All values not ending with the given string."""
-  title_not_ends_with: String
-  text: String
-
-  """All values that are not equal to given value."""
-  text_not: String
-
-  """All values that are contained in given list."""
-  text_in: [String!]
-
-  """All values that are not contained in given list."""
-  text_not_in: [String!]
-
-  """All values less than the given value."""
-  text_lt: String
-
-  """All values less than or equal the given value."""
-  text_lte: String
-
-  """All values greater than the given value."""
-  text_gt: String
-
-  """All values greater than or equal the given value."""
-  text_gte: String
-
-  """All values containing the given string."""
-  text_contains: String
-
-  """All values not containing the given string."""
-  text_not_contains: String
-
-  """All values starting with the given string."""
-  text_starts_with: String
-
-  """All values not starting with the given string."""
-  text_not_starts_with: String
-
-  """All values ending with the given string."""
-  text_ends_with: String
-
-  """All values not ending with the given string."""
-  text_not_ends_with: String
+  user: UserWhereInput
+  winner: TeamWhereInput
 }
 
-input PostWhereUniqueInput {
+input ForecastWhereUniqueInput {
   id: ID
 }
 
+type Group implements Node {
+  id: ID!
+  name: String!
+}
+
+"""A connection to a list of items."""
+type GroupConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [GroupEdge]!
+  aggregate: AggregateGroup!
+}
+
+input GroupCreateInput {
+  name: String!
+}
+
+input GroupCreateOneInput {
+  create: GroupCreateInput
+  connect: GroupWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type GroupEdge {
+  """The item at the end of the edge."""
+  node: Group!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum GroupOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type GroupPreviousValues {
+  id: ID!
+  name: String!
+}
+
+type GroupSubscriptionPayload {
+  mutation: MutationType!
+  node: Group
+  updatedFields: [String!]
+  previousValues: GroupPreviousValues
+}
+
+input GroupSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [GroupSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [GroupSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [GroupSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: GroupWhereInput
+}
+
+input GroupUpdateDataInput {
+  name: String
+}
+
+input GroupUpdateInput {
+  name: String
+}
+
+input GroupUpdateOneInput {
+  create: GroupCreateInput
+  connect: GroupWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
+  update: GroupUpdateDataInput
+  upsert: GroupUpsertNestedInput
+}
+
+input GroupUpsertNestedInput {
+  update: GroupUpdateDataInput!
+  create: GroupCreateInput!
+}
+
+input GroupWhereInput {
+  """Logical AND on all given filters."""
+  AND: [GroupWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [GroupWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [GroupWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  _MagicalBackRelation_GroupToUser_every: UserWhereInput
+  _MagicalBackRelation_GroupToUser_some: UserWhereInput
+  _MagicalBackRelation_GroupToUser_none: UserWhereInput
+}
+
+input GroupWhereUniqueInput {
+  id: ID
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Match implements Node {
+  id: ID!
+  team_home(where: TeamWhereInput): Team!
+  team_away(where: TeamWhereInput): Team!
+  date: String!
+  time: String!
+  weight: Int!
+  score_home: Int
+  score_away: Int
+  Winner(where: TeamWhereInput): Team
+}
+
+"""A connection to a list of items."""
+type MatchConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MatchEdge]!
+  aggregate: AggregateMatch!
+}
+
+input MatchCreateInput {
+  date: String!
+  time: String!
+  weight: Int
+  score_home: Int
+  score_away: Int
+  team_home: TeamCreateOneInput!
+  team_away: TeamCreateOneInput!
+  Winner: TeamCreateOneInput
+}
+
+"""An edge in a connection."""
+type MatchEdge {
+  """The item at the end of the edge."""
+  node: Match!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum MatchOrderByInput {
+  id_ASC
+  id_DESC
+  date_ASC
+  date_DESC
+  time_ASC
+  time_DESC
+  weight_ASC
+  weight_DESC
+  score_home_ASC
+  score_home_DESC
+  score_away_ASC
+  score_away_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type MatchPreviousValues {
+  id: ID!
+  date: String!
+  time: String!
+  weight: Int!
+  score_home: Int
+  score_away: Int
+}
+
+type MatchSubscriptionPayload {
+  mutation: MutationType!
+  node: Match
+  updatedFields: [String!]
+  previousValues: MatchPreviousValues
+}
+
+input MatchSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MatchSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MatchSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MatchSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: MatchWhereInput
+}
+
+input MatchUpdateInput {
+  date: String
+  time: String
+  weight: Int
+  score_home: Int
+  score_away: Int
+  team_home: TeamUpdateOneInput
+  team_away: TeamUpdateOneInput
+  Winner: TeamUpdateOneInput
+}
+
+input MatchWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MatchWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MatchWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MatchWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  date: String
+
+  """All values that are not equal to given value."""
+  date_not: String
+
+  """All values that are contained in given list."""
+  date_in: [String!]
+
+  """All values that are not contained in given list."""
+  date_not_in: [String!]
+
+  """All values less than the given value."""
+  date_lt: String
+
+  """All values less than or equal the given value."""
+  date_lte: String
+
+  """All values greater than the given value."""
+  date_gt: String
+
+  """All values greater than or equal the given value."""
+  date_gte: String
+
+  """All values containing the given string."""
+  date_contains: String
+
+  """All values not containing the given string."""
+  date_not_contains: String
+
+  """All values starting with the given string."""
+  date_starts_with: String
+
+  """All values not starting with the given string."""
+  date_not_starts_with: String
+
+  """All values ending with the given string."""
+  date_ends_with: String
+
+  """All values not ending with the given string."""
+  date_not_ends_with: String
+  time: String
+
+  """All values that are not equal to given value."""
+  time_not: String
+
+  """All values that are contained in given list."""
+  time_in: [String!]
+
+  """All values that are not contained in given list."""
+  time_not_in: [String!]
+
+  """All values less than the given value."""
+  time_lt: String
+
+  """All values less than or equal the given value."""
+  time_lte: String
+
+  """All values greater than the given value."""
+  time_gt: String
+
+  """All values greater than or equal the given value."""
+  time_gte: String
+
+  """All values containing the given string."""
+  time_contains: String
+
+  """All values not containing the given string."""
+  time_not_contains: String
+
+  """All values starting with the given string."""
+  time_starts_with: String
+
+  """All values not starting with the given string."""
+  time_not_starts_with: String
+
+  """All values ending with the given string."""
+  time_ends_with: String
+
+  """All values not ending with the given string."""
+  time_not_ends_with: String
+  weight: Int
+
+  """All values that are not equal to given value."""
+  weight_not: Int
+
+  """All values that are contained in given list."""
+  weight_in: [Int!]
+
+  """All values that are not contained in given list."""
+  weight_not_in: [Int!]
+
+  """All values less than the given value."""
+  weight_lt: Int
+
+  """All values less than or equal the given value."""
+  weight_lte: Int
+
+  """All values greater than the given value."""
+  weight_gt: Int
+
+  """All values greater than or equal the given value."""
+  weight_gte: Int
+  score_home: Int
+
+  """All values that are not equal to given value."""
+  score_home_not: Int
+
+  """All values that are contained in given list."""
+  score_home_in: [Int!]
+
+  """All values that are not contained in given list."""
+  score_home_not_in: [Int!]
+
+  """All values less than the given value."""
+  score_home_lt: Int
+
+  """All values less than or equal the given value."""
+  score_home_lte: Int
+
+  """All values greater than the given value."""
+  score_home_gt: Int
+
+  """All values greater than or equal the given value."""
+  score_home_gte: Int
+  score_away: Int
+
+  """All values that are not equal to given value."""
+  score_away_not: Int
+
+  """All values that are contained in given list."""
+  score_away_in: [Int!]
+
+  """All values that are not contained in given list."""
+  score_away_not_in: [Int!]
+
+  """All values less than the given value."""
+  score_away_lt: Int
+
+  """All values less than or equal the given value."""
+  score_away_lte: Int
+
+  """All values greater than the given value."""
+  score_away_gt: Int
+
+  """All values greater than or equal the given value."""
+  score_away_gte: Int
+  team_home: TeamWhereInput
+  team_away: TeamWhereInput
+  Winner: TeamWhereInput
+}
+
+input MatchWhereUniqueInput {
+  id: ID
+}
+
+type Mutation {
+  createMatch(data: MatchCreateInput!): Match!
+  createForecast(data: ForecastCreateInput!): Forecast!
+  createUser(data: UserCreateInput!): User!
+  createGroup(data: GroupCreateInput!): Group!
+  createTeam(data: TeamCreateInput!): Team!
+  updateMatch(data: MatchUpdateInput!, where: MatchWhereUniqueInput!): Match
+  updateForecast(data: ForecastUpdateInput!, where: ForecastWhereUniqueInput!): Forecast
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateGroup(data: GroupUpdateInput!, where: GroupWhereUniqueInput!): Group
+  updateTeam(data: TeamUpdateInput!, where: TeamWhereUniqueInput!): Team
+  deleteMatch(where: MatchWhereUniqueInput!): Match
+  deleteForecast(where: ForecastWhereUniqueInput!): Forecast
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteGroup(where: GroupWhereUniqueInput!): Group
+  deleteTeam(where: TeamWhereUniqueInput!): Team
+  upsertMatch(where: MatchWhereUniqueInput!, create: MatchCreateInput!, update: MatchUpdateInput!): Match!
+  upsertForecast(where: ForecastWhereUniqueInput!, create: ForecastCreateInput!, update: ForecastUpdateInput!): Forecast!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertGroup(where: GroupWhereUniqueInput!, create: GroupCreateInput!, update: GroupUpdateInput!): Group!
+  upsertTeam(where: TeamWhereUniqueInput!, create: TeamCreateInput!, update: TeamUpdateInput!): Team!
+  updateManyMatches(data: MatchUpdateInput!, where: MatchWhereInput): BatchPayload!
+  updateManyForecasts(data: ForecastUpdateInput!, where: ForecastWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
+  updateManyGroups(data: GroupUpdateInput!, where: GroupWhereInput): BatchPayload!
+  updateManyTeams(data: TeamUpdateInput!, where: TeamWhereInput): BatchPayload!
+  deleteManyMatches(where: MatchWhereInput): BatchPayload!
+  deleteManyForecasts(where: ForecastWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyGroups(where: GroupWhereInput): BatchPayload!
+  deleteManyTeams(where: TeamWhereInput): BatchPayload!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
 type Query {
-  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
-  post(where: PostWhereUniqueInput!): Post
-  postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
+  matches(where: MatchWhereInput, orderBy: MatchOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Match]!
+  forecasts(where: ForecastWhereInput, orderBy: ForecastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Forecast]!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group]!
+  teams(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Team]!
+  match(where: MatchWhereUniqueInput!): Match
+  forecast(where: ForecastWhereUniqueInput!): Forecast
+  user(where: UserWhereUniqueInput!): User
+  group(where: GroupWhereUniqueInput!): Group
+  team(where: TeamWhereUniqueInput!): Team
+  matchesConnection(where: MatchWhereInput, orderBy: MatchOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MatchConnection!
+  forecastsConnection(where: ForecastWhereInput, orderBy: ForecastOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ForecastConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  groupsConnection(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupConnection!
+  teamsConnection(where: TeamWhereInput, orderBy: TeamOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TeamConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -303,5 +793,542 @@ type Query {
 }
 
 type Subscription {
-  post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
+  match(where: MatchSubscriptionWhereInput): MatchSubscriptionPayload
+  forecast(where: ForecastSubscriptionWhereInput): ForecastSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
+  team(where: TeamSubscriptionWhereInput): TeamSubscriptionPayload
+}
+
+type Team implements Node {
+  id: ID!
+  name: String!
+  image: String
+}
+
+"""A connection to a list of items."""
+type TeamConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TeamEdge]!
+  aggregate: AggregateTeam!
+}
+
+input TeamCreateInput {
+  name: String!
+  image: String
+}
+
+input TeamCreateOneInput {
+  create: TeamCreateInput
+  connect: TeamWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type TeamEdge {
+  """The item at the end of the edge."""
+  node: Team!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum TeamOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  image_ASC
+  image_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type TeamPreviousValues {
+  id: ID!
+  name: String!
+  image: String
+}
+
+type TeamSubscriptionPayload {
+  mutation: MutationType!
+  node: Team
+  updatedFields: [String!]
+  previousValues: TeamPreviousValues
+}
+
+input TeamSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TeamSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TeamSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TeamSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: TeamWhereInput
+}
+
+input TeamUpdateDataInput {
+  name: String
+  image: String
+}
+
+input TeamUpdateInput {
+  name: String
+  image: String
+}
+
+input TeamUpdateOneInput {
+  create: TeamCreateInput
+  connect: TeamWhereUniqueInput
+  delete: Boolean
+  update: TeamUpdateDataInput
+  upsert: TeamUpsertNestedInput
+}
+
+input TeamUpsertNestedInput {
+  update: TeamUpdateDataInput!
+  create: TeamCreateInput!
+}
+
+input TeamWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TeamWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TeamWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TeamWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  image: String
+
+  """All values that are not equal to given value."""
+  image_not: String
+
+  """All values that are contained in given list."""
+  image_in: [String!]
+
+  """All values that are not contained in given list."""
+  image_not_in: [String!]
+
+  """All values less than the given value."""
+  image_lt: String
+
+  """All values less than or equal the given value."""
+  image_lte: String
+
+  """All values greater than the given value."""
+  image_gt: String
+
+  """All values greater than or equal the given value."""
+  image_gte: String
+
+  """All values containing the given string."""
+  image_contains: String
+
+  """All values not containing the given string."""
+  image_not_contains: String
+
+  """All values starting with the given string."""
+  image_starts_with: String
+
+  """All values not starting with the given string."""
+  image_not_starts_with: String
+
+  """All values ending with the given string."""
+  image_ends_with: String
+
+  """All values not ending with the given string."""
+  image_not_ends_with: String
+  _MagicalBackRelation_TeamWinner_every: MatchWhereInput
+  _MagicalBackRelation_TeamWinner_some: MatchWhereInput
+  _MagicalBackRelation_TeamWinner_none: MatchWhereInput
+  _MagicalBackRelation_TeamAway_every: MatchWhereInput
+  _MagicalBackRelation_TeamAway_some: MatchWhereInput
+  _MagicalBackRelation_TeamAway_none: MatchWhereInput
+  _MagicalBackRelation_ForecastToTeam_every: ForecastWhereInput
+  _MagicalBackRelation_ForecastToTeam_some: ForecastWhereInput
+  _MagicalBackRelation_ForecastToTeam_none: ForecastWhereInput
+  _MagicalBackRelation_TeamHome_every: MatchWhereInput
+  _MagicalBackRelation_TeamHome_some: MatchWhereInput
+  _MagicalBackRelation_TeamHome_none: MatchWhereInput
+}
+
+input TeamWhereUniqueInput {
+  id: ID
+}
+
+type User implements Node {
+  id: ID!
+  isAdmin: Boolean!
+  email: String!
+  password: String!
+  group(where: GroupWhereInput): Group
+}
+
+"""A connection to a list of items."""
+type UserConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [UserEdge]!
+  aggregate: AggregateUser!
+}
+
+input UserCreateInput {
+  isAdmin: Boolean
+  email: String!
+  password: String!
+  group: GroupCreateOneInput
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type UserEdge {
+  """The item at the end of the edge."""
+  node: User!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum UserOrderByInput {
+  id_ASC
+  id_DESC
+  isAdmin_ASC
+  isAdmin_DESC
+  email_ASC
+  email_DESC
+  password_ASC
+  password_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type UserPreviousValues {
+  id: ID!
+  isAdmin: Boolean!
+  email: String!
+  password: String!
+}
+
+type UserSubscriptionPayload {
+  mutation: MutationType!
+  node: User
+  updatedFields: [String!]
+  previousValues: UserPreviousValues
+}
+
+input UserSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: UserWhereInput
+}
+
+input UserUpdateDataInput {
+  isAdmin: Boolean
+  email: String
+  password: String
+  group: GroupUpdateOneInput
+}
+
+input UserUpdateInput {
+  isAdmin: Boolean
+  email: String
+  password: String
+  group: GroupUpdateOneInput
+}
+
+input UserUpdateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  delete: Boolean
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
+}
+
+input UserWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  isAdmin: Boolean
+
+  """All values that are not equal to given value."""
+  isAdmin_not: Boolean
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+  password: String
+
+  """All values that are not equal to given value."""
+  password_not: String
+
+  """All values that are contained in given list."""
+  password_in: [String!]
+
+  """All values that are not contained in given list."""
+  password_not_in: [String!]
+
+  """All values less than the given value."""
+  password_lt: String
+
+  """All values less than or equal the given value."""
+  password_lte: String
+
+  """All values greater than the given value."""
+  password_gt: String
+
+  """All values greater than or equal the given value."""
+  password_gte: String
+
+  """All values containing the given string."""
+  password_contains: String
+
+  """All values not containing the given string."""
+  password_not_contains: String
+
+  """All values starting with the given string."""
+  password_starts_with: String
+
+  """All values not starting with the given string."""
+  password_not_starts_with: String
+
+  """All values ending with the given string."""
+  password_ends_with: String
+
+  """All values not ending with the given string."""
+  password_not_ends_with: String
+  group: GroupWhereInput
+  _MagicalBackRelation_ForecastToUser_every: ForecastWhereInput
+  _MagicalBackRelation_ForecastToUser_some: ForecastWhereInput
+  _MagicalBackRelation_ForecastToUser_none: ForecastWhereInput
+}
+
+input UserWhereUniqueInput {
+  id: ID
 }

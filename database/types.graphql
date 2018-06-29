@@ -1,6 +1,36 @@
-type Post {
+type Group {
   id: ID! @unique
-  isPublished: Boolean! @default(value: false)
-  title: String!
-  text: String!
+  name: String!
+}
+
+type User {
+  id: ID! @unique
+  isAdmin: Boolean! @default(value: false)
+  email: String!
+  password: String!
+  group: Group
+}
+
+type Team {
+  id: ID! @unique
+  name: String!
+  image: String
+}
+
+type Match {
+  id: ID! @unique
+  team_home: Team! @relation(name: "TeamHome")
+  team_away: Team! @relation(name: "TeamAway")
+  date: String!
+  time: String!
+  weight: Int! @default(value: 1)
+  score_home: Int
+  score_away: Int
+  Winner: Team @relation(name: "TeamWinner")
+}
+
+type Forecast {
+  id: ID! @unique
+  user: User!
+  winner: Team!
 }
