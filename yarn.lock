@@ -30,10 +30,6 @@
   version "0.12.6"
   resolved "https://registry.yarnpkg.com/@types/graphql/-/graphql-0.12.6.tgz#3d619198585fcabe5f4e1adfb5cf5f3388c66c13"
 
-"@types/lodash@^4.14.91":
-  version "4.14.108"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.108.tgz#02656af3add2e5b3174f830862c47421c00ef817"
-
 "@types/node@*":
   version "10.0.4"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.0.4.tgz#130598ee56e9a1210a53f557d64935571f05390d"
@@ -1755,13 +1751,6 @@ graceful-fs@^4.1.0, graceful-fs@^4.1.10, graceful-fs@^4.1.11, graceful-fs@^4.1.2
 "graceful-readlink@>= 1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/graceful-readlink/-/graceful-readlink-1.0.1.tgz#4cafad76bc62f02fa039b2f94e9a3dd3a391a725"
-
-graph-tools@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/graph-tools/-/graph-tools-0.1.2.tgz#5846aaab0e844e8ec71418d6a2c52696293d66d4"
-  dependencies:
-    "@types/lodash" "^4.14.91"
-    lodash "^4.17.4"
 
 graphcool-inquirer@^1.0.3:
   version "1.0.3"

@@ -1,5 +1,5 @@
-const post = require('./post')
+const auth = require('./auth')
 
 module.exports = {
-  ...post,
+  ...auth,
 }

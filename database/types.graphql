@@ -7,7 +7,6 @@ type User {
   id: ID! @unique
   isAdmin: Boolean! @default(value: false)
   email: String!
-  password: String!
   group: Group
 }
 
@@ -33,4 +32,9 @@ type Forecast {
   id: ID! @unique
   user: User!
   winner: Team!
+}
+
+type AuthPayload {
+  token: String!
+  email: String!
 }
